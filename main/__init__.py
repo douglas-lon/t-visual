@@ -5,3 +5,4 @@ app.config['SECRET_KEY'] = 'pastel_e_bom'
 
 
 from main import routes
+
