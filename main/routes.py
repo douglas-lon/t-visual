@@ -1,11 +1,21 @@
 from flask import render_template, request
 from main import app
 import pickle
+import json
 
-@app.route('/')
-@app.route('/home/')
-def home():
-	return render_template('home.html')
+@app.route('/predict/', methods=['POST'])
+def predict():
+	data = json.loads(request.data.decode('utf8'))
+
+	with open('./main/modelo.pkl', 'rb') as file:
+		model = pickle.load(file)
+	
+		data = json.loads(request.data.decode('utf8'))
+		result = apiHandleData(data)
+		result = list(result.values())
+		predict = model.predict([result])
+		
+	return str(predict)
 
 @app.route('/resultado/',  methods=["GET", "POST"])
 def resultado():
@@ -29,6 +39,23 @@ def resultado():
 
 		return f"<h1> {mensagem} <h2>"
 
+def apiHandleData(data):
+	
+	new ={
+		"age": int(data['age']),
+		"sex": int(handle_char(data['sex'], ['M', 'F'])),
+		"chestPain": int(handle_char(data['chestPain'], ['TA', 'ATA', 'NAP', 'ASY'])),
+		"restingBP": int(data['restingBP']),
+		"cholesterol": int(data['cholesterol']),
+		"fastingBS": 1 if int(data['fastingBS']) >= 120 else 0,
+		"restingECG": int(handle_char(data['restingECG'], ['Normal', 'ST', 'LVH'])),
+		"maxHR": int(data['maxHR']),
+		"exerciseAngina": int(handle_char(data['exerciseAngina'], ['N', 'Y'])),
+		"oldPeak": float(data['oldPeak']),
+		"stSlope": int(handle_char(data['stSlope'], ['Up','Flat', 'Down'])) ,
+	}
+	
+	return new
 
 def handleData(data):
 	
