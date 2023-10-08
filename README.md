@@ -15,3 +15,8 @@ Aceita json com os seguintes parâmetros:<br>
 		"oldPeak": float,
 		"stSlope": ['Up','Flat', 'Down'] ,
 	}
+
+Retorna:
+
+ 	0 = Negativo
+  	1 = Positivo
